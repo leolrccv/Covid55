@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace Covid_19
 {
@@ -62,7 +61,7 @@ namespace Covid_19
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine("VOCÊ DEVE DIGITAR APENAS [S] OU [N]!!\n");
                     Console.ResetColor();
-                } 
+                }
             } while (resultado != "S" && resultado != "N");
         }
         public void Importancia()
@@ -81,8 +80,21 @@ namespace Covid_19
                 Comorbidade = false;
             }
 
-            Console.Write("Quantos dias de sintomas?: ");
-            Periodo = int.Parse(Console.ReadLine());
+            int p;
+            do
+            {
+                Console.Write("Quantos dias de sintomas?: ");
+                string periodo = Console.ReadLine();
+
+                if (int.TryParse(periodo, out p))
+                {
+                    Periodo = p;
+                }
+                else
+                {
+                    Console.WriteLine("\nDigite um número inteiro!\n");
+                }
+            } while (p == 0);
         }
 
         public override string ToString()

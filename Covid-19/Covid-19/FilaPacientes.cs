@@ -1,6 +1,4 @@
-﻿using System;
-
-
+﻿
 namespace Covid_19
 {
     class FilaPacientes

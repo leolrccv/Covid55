@@ -12,12 +12,16 @@ namespace Covid_19
             ArquivoCSV arquivo = new ArquivoCSV();
             arquivo.Path = @"C:\temp\ws-c#\5by5-ativ02\Pacientes.csv";
 
+            if (!Directory.Exists(@"C:\temp\ws-c#\5by5-ativ02"))
+            {
+                Directory.CreateDirectory(@"C:\temp\ws-c#\5by5-ativ02");
+            }
             if (!File.Exists(arquivo.Path))
             {
                 FileStream file = File.Create(arquivo.Path);
                 file.Close();
             }
-            
+
             Paciente paciente = new Paciente();
             FilaPacientes fila = new FilaPacientes();
             FilaPacientes filaPrioritaria = new FilaPacientes();
@@ -32,7 +36,7 @@ namespace Covid_19
             string op;
             do
             {
-                Console.WriteLine(">>>BEM VINDOS AO HOSPITAL DE CAMPANHA CONTA A COVID 19<<<\n" +
+                Console.WriteLine(" >>>BEM VINDOS AO HOSPITAL DE CAMPANHA COVID 19<<<\n" +
                                   "1 - Cadastre um paciente\n" +
                                   "2 - Proximo da fila\n" +
                                   "3 - Chamar para internacao\n" +
@@ -88,7 +92,7 @@ namespace Covid_19
                             paciente = fila.Head;
                             fila.Pop();
                             contador = 0;
-                            
+
                             Imprimir(paciente);
                             Infectado(paciente, urgente, poucoUrgente, naoUrgente, assintomaticos, arquivo);
                         }
@@ -102,8 +106,7 @@ namespace Covid_19
 
                     case "3":
                         Console.Clear();
-                        //if leito.vazio()
-                        
+
                         if (!urgente.Vazia())
                         {
                             Console.WriteLine("Chamando próximo paciente para internação...\n");
@@ -150,8 +153,18 @@ namespace Covid_19
             Console.Write("Nome :");
             string nome = Console.ReadLine();
 
-            Console.Write("Data de nascimento(dd/mm/aaaa): ");
-            DateTime dataNascimento = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            DateTime dataNascimento = DateTime.Parse("01/01/0001");
+            do
+            {
+                Console.Write("Data de nascimento(dd/mm/aaaa): ");
+                string dn = Console.ReadLine();
+                
+                if (!DateTime.TryParseExact(dn, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataNascimento))
+                {
+                    Console.WriteLine("Digite no formato especificado: dd/mm/aaaa");
+                }
+            } while (dataNascimento == DateTime.Parse("01/01/0001"));
+
 
             Console.Write("Telefone: ");
             string telefone = Console.ReadLine();
@@ -209,7 +222,16 @@ namespace Covid_19
                     {
                         naoUrgente.Push(paciente);
                     }
-                    arquivo.Salvar(paciente);
+
+                    int posicao = arquivo.ProcuraCPF(paciente.CPF);
+                    if (posicao != -1)
+                    {
+                        arquivo.Salvar(paciente, posicao);
+                    }
+                    else
+                    {
+                        arquivo.Salvar(paciente);
+                    }
                 }
                 else
                 {
@@ -218,13 +240,13 @@ namespace Covid_19
                     int posicao = arquivo.ProcuraCPF(paciente.CPF);
                     if (posicao != -1)
                     {
-                        arquivo.Salvar(paciente,posicao);
+                        arquivo.Salvar(paciente, posicao);
                     }
                     else
                     {
                         arquivo.Salvar(paciente);
                     }
-                    
+
                 }
             }
             else

@@ -66,32 +66,36 @@ namespace Covid_19
         }
         public void Salvar(Paciente paciente, int i)
         {
-            string linepaciente = $"{paciente.CPF}," +
-                                  $"{paciente.Nome}," +
-                                  $"{paciente.DataNascimento.ToString("dd/MM/yyyy")}," +
-                                  $"{paciente.Telefone}," +
-                                  $"{paciente.Comorbidade}," +
-                                  $"{paciente.Periodo}," +
-                                  $"{paciente.Covid}";
+            
             string[] lines = File.ReadAllLines(Path);
-
-
-
+            
             string line = lines[i];
             string[] pacienteCSV = line.Split(',');
             
             if (pacienteCSV[4] != paciente.Comorbidade.ToString())
             {
-                pacienteCSV[4].Replace(pacienteCSV[4], paciente.Comorbidade.ToString());
+                pacienteCSV[4] = paciente.Comorbidade.ToString();
             }
             if (pacienteCSV[5] != paciente.Periodo.ToString())
             {
-                pacienteCSV[5].Replace(pacienteCSV[5], paciente.Periodo.ToString());
+                pacienteCSV[5] = paciente.Periodo.ToString();
             }
             if (pacienteCSV[6] != paciente.Covid.ToString())
             {
-                pacienteCSV[6].Replace(pacienteCSV[6], paciente.Covid.ToString());
+                pacienteCSV[6] = paciente.Covid.ToString();
             }
+
+            string linepaciente = $"{paciente.CPF}," +
+                                  $"{paciente.Nome}," +
+                                  $"{paciente.DataNascimento:dd/MM/yyyy}," +
+                                  $"{paciente.Telefone}," +
+                                  $"{pacienteCSV[4]}," +
+                                  $"{pacienteCSV[5]}," +
+                                  $"{pacienteCSV[6]}";
+
+            lines[i] = linepaciente;
+
+            File.WriteAllLines(Path, lines);
         }
     }
 }
